@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/blakeroy01/internet-orders/server/transport"
+	"github.com/blakeroy01/internet-orders/transport"
 )
 
 func main() {
