@@ -11,9 +11,7 @@ func (handler *APIHandler) HomePage() http.Handler {
 	})
 }
 
-// RegisterUser is a handler function that is used to retrieve the register user page
-// Create a user in the database
-func (handler *APIHandler) RegisterUser() http.Handler {
+func (handler *APIHandler) PaymentInfo() http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		// What HTTP Method is sent to this endpoint?
 		if req.Method == http.MethodGet {
@@ -21,18 +19,30 @@ func (handler *APIHandler) RegisterUser() http.Handler {
 			// Display HTML to requesting user
 		} else if req.Method == http.MethodPost {
 			res.Write([]byte("POST"))
+		} else if req.Method == http.MethodPut {
+			res.Write([]byte("PUT"))
 		} else {
-			res.Write([]byte("Error"))
+			http.Error(res, "Unsupported HTTP Method", http.StatusBadRequest)
 		}
 	})
 }
 
-// TODO: (Jeb) Shell out a REST endpoint that handles a POST request to create an order. We can implement a database after we meet.
+// RegisterUser is a handler function that is used to create a user in the database
+func (handler *APIHandler) RegisterUser() http.Handler {
+	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		if req.Method == http.MethodPost {
+			res.Write([]byte("POST"))
+		} else {
+			http.Error(res, "Unsupported HTTP Method", http.StatusBadRequest)
+		}
+	})
+}
 
 func (handler *APIHandler) CreateMultiplexer() *http.ServeMux {
 	multiplexer := http.NewServeMux()
 	multiplexer.Handle("/", handler.HomePage())
 	multiplexer.Handle("/user/register", handler.RegisterUser())
+	multiplexer.Handle("/payments", handler.PaymentInfo())
 
 	return multiplexer
 }
