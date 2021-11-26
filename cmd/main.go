@@ -24,7 +24,7 @@ func main() {
 	log.Println("Starting Server")
 
 	multiplexer := APIHandler.CreateMultiplexer()
-	http.ListenAndServe(":4000", multiplexer)
+	http.ListenAndServe(":8080", multiplexer)
 
 	// Graceful Shutdown
 }
