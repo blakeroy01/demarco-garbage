@@ -1,8 +1,13 @@
 package transport
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/blakeroy01/internet-orders/mysql"
+)
 
 type APIHandler struct {
+	DB *mysql.MySQLDatabase
 }
 
 func (handler *APIHandler) HomePage() http.Handler {
@@ -13,11 +18,7 @@ func (handler *APIHandler) HomePage() http.Handler {
 
 func (handler *APIHandler) PaymentInfo() http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-		// What HTTP Method is sent to this endpoint?
-		if req.Method == http.MethodGet {
-			res.Write([]byte("GET"))
-			// Display HTML to requesting user
-		} else if req.Method == http.MethodPost {
+		if req.Method == http.MethodPost {
 			res.Write([]byte("POST"))
 		} else if req.Method == http.MethodPut {
 			res.Write([]byte("PUT"))
