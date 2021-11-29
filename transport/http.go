@@ -39,6 +39,16 @@ func (handler *APIHandler) RegisterUser() http.Handler {
 	})
 }
 
+func (handler *APIHandler) LoginUser() http.Handler {
+	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		if req.Method == http.MethodGet {
+			res.Write([]byte("GET"))
+		} else {
+			http.Error(res, "Unsupported HTTP Method", http.StatusBadRequest)
+		}
+	})
+}
+
 func (handler *APIHandler) CreateMultiplexer() *http.ServeMux {
 	multiplexer := http.NewServeMux()
 	multiplexer.Handle("/", handler.HomePage())
