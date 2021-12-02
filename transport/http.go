@@ -3,6 +3,7 @@ package transport
 import (
 	"net/http"
 
+	"github.com/blakeroy01/internet-orders/controllers"
 	"github.com/blakeroy01/internet-orders/mysql"
 )
 
@@ -19,6 +20,7 @@ func (handler *APIHandler) HomePage() http.Handler {
 func (handler *APIHandler) PaymentInfo() http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		if req.Method == http.MethodPost {
+			controllers.CreateCard(&req.Body, handler.DB)
 			res.Write([]byte("POST"))
 		} else if req.Method == http.MethodPut {
 			res.Write([]byte("PUT"))

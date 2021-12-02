@@ -3,10 +3,12 @@ package mysql
 import (
 	"database/sql"
 	"log"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type MySQLDatabase struct {
-	connection *sql.DB
+	Connection *sql.DB
 }
 
 // Connect is a helper function to connect to a MySQL instance
@@ -18,6 +20,6 @@ func Connect() (*MySQLDatabase, error) {
 
 	log.Println("Successfully connected to MySQL")
 	return &MySQLDatabase{
-		connection: db,
+		Connection: db,
 	}, nil
 }
