@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 
 	"github.com/blakeroy01/internet-orders/models"
 	"github.com/blakeroy01/internet-orders/mysql"
@@ -39,7 +38,7 @@ func CreateCard(requestBody *io.ReadCloser, db *mysql.MySQLDatabase) error {
 
 // Read will receive the body contents of a request
 // then retreive the specified item in the MySQL Database Server
-func ReadCard(requestBody *io.ReadCloser, db *mysql.MySQLDatabase) (models.Card, error) {
+func ReadCard(requestBody *io.ReadCloser, db *mysql.MySQLDatabase) (*models.Card, error) {
 	card := models.Card{}
 	json.NewDecoder(*requestBody).Decode(&card)
 
@@ -48,9 +47,9 @@ func ReadCard(requestBody *io.ReadCloser, db *mysql.MySQLDatabase) (models.Card,
 	sql := fmt.Sprintf("SELECT * FROM card WHERE user_id = %v;", userID)
 
 	row := db.Connection.QueryRow(sql)
-	var cardData models.Card
+	var cardData *models.Card
 
-	err := row.Scan(&cardData)
+	err := row.Scan(cardData)
 	if err != nil {
 		return cardData, err
 	}
@@ -61,17 +60,17 @@ func ReadCard(requestBody *io.ReadCloser, db *mysql.MySQLDatabase) (models.Card,
 
 // Update will receive the body contents of a request
 // then update the specified item in the MySQL Database Server
-func UpdateCard(requestBody *io.ReadCloser, db *mysql.MySQLDatabase) {
+func UpdateCard(requestBody *io.ReadCloser, db *mysql.MySQLDatabase) error {
 	card := models.Card{}
 	json.NewDecoder(*requestBody).Decode(&card)
 
-	sql := fmt.Sprintf("UPDATE card SET card_number = %s , name_on_card = %s , cvv = %s, expiration_date = %s, billing_address = %s, billing_zip = %s, billing_state = %s) WHERE user_id = %v;", card.CardNumber, card.NameOnCard,
+	sql := fmt.Sprintf("UPDATE card SET card_number = %s, name_on_card = %s , cvv = %s, expiration_date = %s, billing_address = %s, billing_zip = %s, billing_state = %s) WHERE user_id = %v;", card.CardNumber, card.NameOnCard,
 		card.CVV, card.ExpirationDate, card.BillingAddress, card.BillingZip,
 		card.BillingState, card.UserId)
 
 	_, err := db.Connection.Exec(sql)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 }
 
