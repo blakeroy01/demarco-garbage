@@ -34,7 +34,7 @@ func (handler *APIHandler) PaymentInfo() http.Handler {
 func (handler *APIHandler) RegisterUser() http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		if req.Method == http.MethodPost {
-			res.Write([]byte("POST"))
+			controllers.CreateUser(&req.Body, handler.DB)
 		} else {
 			http.Error(res, "Unsupported HTTP Method", http.StatusBadRequest)
 		}
@@ -46,7 +46,27 @@ func (handler *APIHandler) LoginUser() http.Handler {
 		if req.Method == http.MethodGet {
 			res.Write([]byte("GET"))
 		} else if req.Method == http.MethodPost {
-			res.Write([]byte("POST"))
+			controllers.ReadUser(&req.Body, handler.DB)
+		} else {
+			http.Error(res, "Unsupported HTTP Method", http.StatusBadRequest)
+		}
+	})
+}
+
+func (handler *APIHandler) UpdateUser() http.Handler {
+	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		if req.Method == http.MethodPost {
+			controllers.UpdateUser(&req.Body, handler.DB)
+		} else {
+			http.Error(res, "Unsupported HTTP Method", http.StatusBadRequest)
+		}
+	})
+}
+
+func (handler *APIHandler) DeleteUser() http.Handler {
+	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		if req.Method == http.MethodDelete {
+			controllers.DeleteUser(&req.Body, handler.DB)
 		} else {
 			http.Error(res, "Unsupported HTTP Method", http.StatusBadRequest)
 		}
@@ -58,6 +78,8 @@ func (handler *APIHandler) CreateMultiplexer() *http.ServeMux {
 	multiplexer.Handle("/", handler.HomePage())
 	multiplexer.Handle("/user/register", handler.RegisterUser())
 	multiplexer.Handle("/user/login", handler.LoginUser())
+	multiplexer.Handle("/user/delete", handler.DeleteUser())
+	multiplexer.Handle("/user/update", handler.UpdateUser())
 	multiplexer.Handle("/payments", handler.PaymentInfo())
 
 	return multiplexer
