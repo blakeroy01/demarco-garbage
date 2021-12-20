@@ -72,6 +72,7 @@ func UpdateCard(requestBody *io.ReadCloser, db *mysql.MySQLDatabase) error {
 	if err != nil {
 		return err
 	}
+	return nil
 }
 
 // Delete will receive the body contents of a request
